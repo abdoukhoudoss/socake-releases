@@ -6,19 +6,11 @@ echo  ║       SoCake - Publier une mise à jour       ║
 echo  ╚══════════════════════════════════════════════╝
 echo.
 
-REM ── Vérifie le token GitHub ─────────────────────────────────
+REM ── Token GitHub (chargé depuis gh-token.local.bat) ─────────
+if exist "%~dp0gh-token.local.bat" call "%~dp0gh-token.local.bat"
 if "%GH_TOKEN%"=="" (
-    echo [ERREUR] Variable GH_TOKEN non définie.
-    echo.
-    echo  Comment faire :
-    echo  1. Allez sur https://github.com/settings/tokens
-    echo  2. "Generate new token (classic)"
-    echo  3. Cochez la case "repo"
-    echo  4. Copiez le token généré
-    echo  5. Dans ce terminal, tapez :
-    echo     set GH_TOKEN=votre_token_ici
-    echo  6. Relancez release.bat
-    echo.
+    echo [ERREUR] Token GitHub manquant.
+    echo Créez le fichier gh-token.local.bat avec : set GH_TOKEN=votre_token
     pause & exit /b 1
 )
 

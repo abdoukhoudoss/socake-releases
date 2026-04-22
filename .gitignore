@@ -36,3 +36,6 @@ desktop.ini
 
 # Binaires natifs (gérés séparément)
 better_sqlite3_prebuilt.tar.gz
+
+# Token GitHub local (ne jamais committer)
+gh-token.local.bat
