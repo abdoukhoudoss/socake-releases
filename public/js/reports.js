@@ -72,7 +72,7 @@ function renderRevenueChart(monthly) {
       labels,
       datasets: [
         {
-          label: "Chiffre d'affaires (€)",
+          label: `Chiffre d'affaires (${window._currencySymbol || 'FCFA'})`,
           data: revenue,
           backgroundColor: 'rgba(232, 116, 142, 0.8)',
           borderColor: '#E8748E',
@@ -110,7 +110,7 @@ function renderRevenueChart(monthly) {
       },
       scales: {
         x: { grid: { display: false } },
-        y:  { beginAtZero: true, ticks: { callback: v => `${v} €` } },
+        y:  { beginAtZero: true, ticks: { callback: v => `${v} ${window._currencySymbol || 'FCFA'}` } },
         y2: { position: 'right', beginAtZero: true, grid: { drawOnChartArea: false } },
       },
     },
@@ -176,7 +176,7 @@ function renderCategoryChart(byCategory) {
     data: {
       labels: byCategory.map(c => CATEGORY_LABELS[c.category]?.label || c.category),
       datasets: [{
-        label: 'Revenu (€)',
+        label: `Revenu (${window._currencySymbol || 'FCFA'})`,
         data: byCategory.map(c => c.revenue),
         backgroundColor: byCategory.map(c => CAT_COLORS[c.category] || '#ccc'),
         borderRadius: 6,
@@ -191,7 +191,7 @@ function renderCategoryChart(byCategory) {
         tooltip: { callbacks: { label: ctx => ` ${formatMoney(ctx.raw)}` } },
       },
       scales: {
-        x: { beginAtZero: true, ticks: { callback: v => `${v} €` } },
+        x: { beginAtZero: true, ticks: { callback: v => `${v} ${window._currencySymbol || 'FCFA'}` } },
         y: { grid: { display: false } },
       },
     },
@@ -212,7 +212,7 @@ function renderTopProducts(topProducts) {
     data: {
       labels: top8.map(p => p.name),
       datasets: [{
-        label: 'Revenu (€)',
+        label: `Revenu (${window._currencySymbol || 'FCFA'})`,
         data: top8.map(p => p.revenue),
         backgroundColor: 'rgba(232, 116, 142, 0.75)',
         borderColor: '#E8748E',
@@ -229,7 +229,7 @@ function renderTopProducts(topProducts) {
         tooltip: { callbacks: { label: ctx => ` ${formatMoney(ctx.raw)}` } },
       },
       scales: {
-        x: { beginAtZero: true, ticks: { callback: v => `${v} €` } },
+        x: { beginAtZero: true, ticks: { callback: v => `${v} ${window._currencySymbol || 'FCFA'}` } },
         y: { grid: { display: false } },
       },
     },
