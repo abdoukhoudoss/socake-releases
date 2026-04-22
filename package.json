@@ -1,0 +1,93 @@
+{
+  "name": "socake-app",
+  "version": "2.0.0",
+  "description": "SoCake - Gestion de commandes pour patisserie",
+  "main": "main.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "electron": "electron .",
+    "build": "electron-builder --win --x64",
+    "build:portable": "electron-builder --win portable --x64",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^9.4.3",
+    "cors": "^2.8.5",
+    "electron-updater": "^6.8.3",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.1",
+    "pdfkit": "^0.18.0"
+  },
+  "devDependencies": {
+    "electron": "^30.5.1",
+    "electron-builder": "^26.8.1",
+    "nodemon": "^3.0.3"
+  },
+  "build": {
+    "appId": "com.socake.app",
+    "productName": "SoCake",
+    "copyright": "Copyright 2025 SoCake",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "server.js",
+      "database.js",
+      "public/**/*",
+      "node_modules/**/*",
+      "!node_modules/.cache",
+      "!**/*.md",
+      "!**/test/**",
+      "!**/tests/**",
+      "!dist/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SoCake",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "language": "1036"
+    },
+    "portable": {
+      "artifactName": "SoCake-Portable-${version}.exe"
+    },
+    "npmRebuild": false,
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/better-sqlite3/**/*"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "cisse-abdoukhoudoss",
+      "repo": "socake-releases",
+      "releaseType": "release"
+    }
+  }
+}

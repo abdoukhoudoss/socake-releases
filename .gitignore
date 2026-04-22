@@ -1,0 +1,38 @@
+# Dépendances
+node_modules/
+
+# Build Electron
+dist/
+
+# Base de données locale
+socake.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Uploads locaux
+public/uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environnement
+.env
+.env.local
+
+# Cache
+.cache/
+node_modules/.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Binaires natifs (gérés séparément)
+better_sqlite3_prebuilt.tar.gz

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">SoCake — Gestion & Commandes</title>
+  <link rel="stylesheet" href="/css/style.css?v=4" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     AUTH PAGES
+══════════════════════════════════════ -->
+<div id="auth-container" class="auth-container hidden">
+  <!-- LOGIN -->
+  <div id="login-page" class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-logo" id="brand-logo-auth"></div>
+      <h1 class="auth-title" id="auth-company-name">SoCake</h1>
+      <p class="auth-subtitle" id="auth-company-slogan">Cake & Dessert · Gestion de commandes</p>
+    </div>
+    <form id="login-form" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Adresse email</label>
+        <input type="email" id="login-email" class="form-input" placeholder="votre@email.com" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <div class="input-password-wrap">
+          <input type="password" id="login-password" class="form-input" placeholder="••••••••" required />
+          <button type="button" class="btn-toggle-pass" onclick="togglePassword('login-password', this)">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="login-error" class="form-error hidden"></div>
+      <button type="submit" class="btn btn-primary btn-full" id="login-btn">Se connecter</button>
+    </form>
+    <p class="auth-switch">Pas encore de compte ? <a href="#" onclick="showAuthPage('register-page')">Créer un compte</a></p>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="register-page" class="auth-card hidden">
+    <div class="auth-brand">
+      <div class="auth-logo">🎂</div>
+      <h1 class="auth-title">Créer un compte</h1>
+      <p class="auth-subtitle">Rejoignez votre équipe</p>
+    </div>
+    <form id="register-form" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Nom complet</label>
+        <input type="text" id="reg-name" class="form-input" placeholder="Prénom Nom" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Adresse email</label>
+        <input type="email" id="reg-email" class="form-input" placeholder="votre@email.com" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <div class="input-password-wrap">
+          <input type="password" id="reg-password" class="form-input" placeholder="8 caractères minimum" required />
+          <button type="button" class="btn-toggle-pass" onclick="togglePassword('reg-password', this)">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="register-error" class="form-error hidden"></div>
+      <button type="submit" class="btn btn-primary btn-full" id="register-btn">Créer le compte</button>
+    </form>
+    <p class="auth-switch">Déjà un compte ? <a href="#" onclick="showAuthPage('login-page')">Se connecter</a></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════ -->
+<div id="app-container" class="app-container hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand" onclick="navigateTo('dashboard')" style="cursor:pointer">
+        <div class="sidebar-logo" id="sidebar-logo-wrap">
+          <span class="brand-icon">🎂</span>
+        </div>
+        <div class="sidebar-brand-text">
+          <span class="brand-name" id="sidebar-company-name">SoCake</span>
+          <span class="brand-tagline" id="sidebar-company-tagline"></span>
+        </div>
+      </div>
+      <button class="sidebar-close" id="sidebar-close" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Principal</span>
+      <a class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Tableau de bord</span>
+      </a>
+      <a class="nav-item" data-page="orders" onclick="navigateTo('orders')">
+        <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        <span>Commandes</span>
+        <span class="nav-badge" id="nav-pending-badge" style="display:none"></span>
+      </a>
+      <a class="nav-item" data-page="customers" onclick="navigateTo('customers')">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Clients</span>
+      </a>
+      <a class="nav-item" data-page="deliveries" onclick="navigateTo('deliveries')">
+        <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <span>Livraisons</span>
+      </a>
+      <a class="nav-item" data-page="events" onclick="navigateTo('events')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Événements</span>
+      </a>
+
+      <span class="nav-section-label">Catalogue & Stock</span>
+      <a class="nav-item" data-page="products" onclick="navigateTo('products')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span>Catalogue</span>
+      </a>
+      <a class="nav-item" data-page="stock" onclick="navigateTo('stock')">
+        <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span>Stock</span>
+        <span class="nav-badge nav-badge--warn" id="nav-stock-badge" style="display:none"></span>
+      </a>
+      <a class="nav-item" data-page="reports" onclick="navigateTo('reports')">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Rapports</span>
+      </a>
+
+      <div class="nav-divider"></div>
+      <span class="nav-section-label admin-only hidden">Administration</span>
+      <a class="nav-item admin-only hidden" data-page="users" onclick="navigateTo('users')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span>Utilisateurs</span>
+      </a>
+      <a class="nav-item admin-only hidden" data-page="settings" onclick="navigateTo('settings')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Paramètres</span>
+      </a>
+      <a class="nav-item" data-page="profile" onclick="navigateTo('profile')">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Mon profil</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-mini">
+        <div class="user-mini-avatar" id="sidebar-avatar">A</div>
+        <div class="user-mini-info">
+          <span class="user-mini-name" id="sidebar-username">Utilisateur</span>
+          <span class="user-mini-role" id="sidebar-role">Employé</span>
+        </div>
+      </div>
+      <div class="sidebar-footer-actions">
+        <div class="sse-indicator" id="sse-indicator" title="Synchronisation temps réel">
+          <span class="sse-dot"></span>
+        </div>
+        <button class="btn-logout" onclick="logout()" title="Déconnexion">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- OVERLAY for mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="topbar-menu" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title" id="topbar-title">Tableau de bord</div>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <section id="page-dashboard" class="page active">
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card stat-card--clickable" onclick="navigateTo('orders')">
+            <div class="stat-icon stat-icon--blue">
+              <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total commandes</span>
+              <span class="stat-value" id="stat-total">—</span>
+            </div>
+          </div>
+          <div class="stat-card stat-card--clickable" onclick="navigateTo('orders')">
+            <div class="stat-icon stat-icon--orange">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">En cours</span>
+              <span class="stat-value" id="stat-pending">—</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon--green">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">CA ce mois</span>
+              <span class="stat-value" id="stat-revenue">—</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon--rose">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Solde restant dû</span>
+              <span class="stat-value" id="stat-outstanding">—</span>
+            </div>
+          </div>
+          <div class="stat-card stat-card--clickable" onclick="navigateTo('customers')">
+            <div class="stat-icon stat-icon--purple">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Clients</span>
+              <span class="stat-value" id="stat-customers">—</span>
+            </div>
+          </div>
+          <div class="stat-card stat-card--clickable" onclick="navigateTo('deliveries')">
+            <div class="stat-icon stat-icon--teal">
+              <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Livraisons aujourd'hui</span>
+              <span class="stat-value" id="stat-deliveries">—</span>
+            </div>
+          </div>
+          <div class="stat-card stat-card--clickable" onclick="navigateTo('events')">
+            <div class="stat-icon stat-icon--gold">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Événements à venir</span>
+              <span class="stat-value" id="stat-events">—</span>
+            </div>
+          </div>
+          <div class="stat-card stat-card--clickable" onclick="navigateTo('stock')">
+            <div class="stat-icon stat-icon--red">
+              <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Stock faible</span>
+              <span class="stat-value" id="stat-stock">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Commandes récentes</h3>
+              <a href="#" class="card-link" onclick="navigateTo('orders')">Voir tout</a>
+            </div>
+            <div id="recent-orders-list" class="order-mini-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Événements à venir</h3>
+              <a href="#" class="card-link" onclick="navigateTo('events')">Voir tout</a>
+            </div>
+            <div id="upcoming-events-list" class="event-mini-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ ORDERS ══ -->
+      <section id="page-orders" class="page hidden">
+        <div class="page-toolbar">
+          <div class="toolbar-filters">
+            <input type="search" id="order-search" class="form-input" placeholder="Chercher commande, client..." oninput="loadOrders()" />
+            <select id="order-filter-status" class="form-select" onchange="loadOrders()">
+              <option value="">Tous les statuts</option>
+              <option value="en_attente">En attente</option>
+              <option value="confirme">Confirmé</option>
+              <option value="en_preparation">En préparation</option>
+              <option value="pret">Prêt</option>
+              <option value="livre">Livré</option>
+              <option value="annule">Annulé</option>
+            </select>
+            <select id="order-filter-payment" class="form-select" onchange="loadOrders()">
+              <option value="">Tout paiement</option>
+              <option value="en_attente">Non payé</option>
+              <option value="partiel">Partiel</option>
+              <option value="complet">Complet</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="openOrderModal()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle commande
+          </button>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Numéro</th>
+                <th>Client</th>
+                <th>Événement</th>
+                <th>Type</th>
+                <th>Livraison</th>
+                <th>Montant</th>
+                <th>Paiement</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ ORDER DETAIL ══ -->
+      <section id="page-order-detail" class="page hidden">
+        <div class="detail-header" id="order-detail-header"></div>
+        <div id="order-detail-content"></div>
+      </section>
+
+      <!-- ══ CUSTOMERS ══ -->
+      <section id="page-customers" class="page hidden">
+        <div class="page-toolbar">
+          <div class="toolbar-filters">
+            <input type="search" id="customer-search" class="form-input" placeholder="Chercher client, email, tél..." oninput="loadCustomers()" />
+          </div>
+          <button class="btn btn-primary" onclick="openCustomerModal()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouveau client
+          </button>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Contact</th>
+                <th>Ville</th>
+                <th>Commandes</th>
+                <th>Total dépensé</th>
+                <th>Depuis le</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customers-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ CUSTOMER DETAIL ══ -->
+      <section id="page-customer-detail" class="page hidden">
+        <div class="detail-header" id="customer-detail-header"></div>
+        <div id="customer-detail-content"></div>
+      </section>
+
+      <!-- ══ DELIVERIES ══ -->
+      <section id="page-deliveries" class="page hidden">
+        <div class="page-toolbar">
+          <div class="toolbar-filters">
+            <input type="date" id="delivery-filter-date" class="form-input" onchange="loadDeliveries()" />
+            <select id="delivery-filter-status" class="form-select" onchange="loadDeliveries()">
+              <option value="">Tous les statuts</option>
+              <option value="confirme">Confirmé</option>
+              <option value="en_preparation">En préparation</option>
+              <option value="pret">Prêt</option>
+              <option value="livre">Livré</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="resetDeliveryFilters()">
+              <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.36"/></svg>
+              Aujourd'hui
+            </button>
+          </div>
+        </div>
+        <div id="deliveries-content"></div>
+      </section>
+
+      <!-- ══ EVENTS ══ -->
+      <section id="page-events" class="page hidden">
+        <div class="page-toolbar">
+          <div class="toolbar-filters">
+            <select id="event-filter-status" class="form-select" onchange="loadEvents()">
+              <option value="">Tous les statuts</option>
+              <option value="planifie">Planifié</option>
+              <option value="en_cours">En cours</option>
+              <option value="termine">Terminé</option>
+              <option value="annule">Annulé</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="openEventModal()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvel événement
+          </button>
+        </div>
+        <div id="events-grid" class="events-grid"></div>
+      </section>
+
+      <!-- ══ EVENT DETAIL ══ -->
+      <section id="page-event-detail" class="page hidden">
+        <div class="detail-header" id="event-detail-header"></div>
+        <div id="event-detail-content"></div>
+      </section>
+
+      <!-- ══ PRODUCTS ══ -->
+      <section id="page-products" class="page hidden">
+        <div class="page-toolbar">
+          <div class="toolbar-filters">
+            <select id="product-filter-cat" class="form-select" onchange="loadProducts()">
+              <option value="">Toutes catégories</option>
+              <option value="verrine">Verrines</option>
+              <option value="cupcake">Cupcakes</option>
+              <option value="solo_delice">Solo Délice</option>
+              <option value="mignardise">Mignardises</option>
+              <option value="gateau">Gâteaux</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="openProductModal()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Ajouter produit
+          </button>
+        </div>
+        <div id="products-grid" class="products-grid"></div>
+      </section>
+
+      <!-- ══ STOCK ══ -->
+      <section id="page-stock" class="page hidden">
+        <div class="page-toolbar">
+          <div class="toolbar-filters">
+            <label class="checkbox-label">
+              <input type="checkbox" id="stock-low-filter" onchange="loadStock()">
+              <span>Stock faible uniquement</span>
+            </label>
+          </div>
+          <button class="btn btn-primary" onclick="openStockModal()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Ajouter article
+          </button>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Article</th>
+                <th>Catégorie</th>
+                <th>Quantité</th>
+                <th>Unité</th>
+                <th>Seuil alerte</th>
+                <th>Coût/unité</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="stock-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ REPORTS ══ -->
+      <section id="page-reports" class="page hidden">
+        <div class="reports-tabs">
+          <button class="report-tab active" data-tab="overview" onclick="switchReportTab(this, 'overview')">Vue d'ensemble</button>
+          <button class="report-tab" data-tab="products" onclick="switchReportTab(this, 'products')">Produits</button>
+          <button class="report-tab" data-tab="customers" onclick="switchReportTab(this, 'customers')">Clients</button>
+          <button class="report-tab" data-tab="margins" onclick="switchReportTab(this, 'margins')">Marges</button>
+        </div>
+
+        <!-- Overview -->
+        <div id="report-tab-overview" class="report-tab-content active">
+          <div class="report-summary-grid" id="report-summary-grid"></div>
+          <div class="report-charts-grid">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">Chiffre d'affaires mensuel</h3></div>
+              <div class="card-body"><canvas id="chart-revenue" height="280"></canvas></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">Commandes par statut</h3></div>
+              <div class="card-body chart-donut-wrap"><canvas id="chart-status" height="280"></canvas></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Revenus par catégorie</h3></div>
+            <div class="card-body"><canvas id="chart-category" height="200"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Products -->
+        <div id="report-tab-products" class="report-tab-content hidden">
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Top produits — Revenus</h3></div>
+            <div class="card-body"><canvas id="chart-top-products" height="260"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Détail produits</h3></div>
+            <div class="table-wrapper" style="box-shadow:none;border:none">
+              <table class="data-table" id="products-report-table">
+                <thead><tr><th>Produit</th><th>Catégorie</th><th>Qté vendue</th><th>Revenu</th></tr></thead>
+                <tbody id="products-report-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customers -->
+        <div id="report-tab-customers" class="report-tab-content hidden">
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Top clients</h3></div>
+            <div class="table-wrapper" style="box-shadow:none;border:none">
+              <table class="data-table">
+                <thead><tr><th>Client</th><th>Commandes</th><th>Total dépensé</th></tr></thead>
+                <tbody id="customers-report-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Margins -->
+        <div id="report-tab-margins" class="report-tab-content hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Analyse des marges par produit</h3>
+            </div>
+            <div class="table-wrapper" style="box-shadow:none;border:none">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Produit</th>
+                    <th>Prix vente</th>
+                    <th>Coût revient</th>
+                    <th>Marge €</th>
+                    <th>Marge %</th>
+                    <th>Qté vendue</th>
+                    <th>Marge totale</th>
+                  </tr>
+                </thead>
+                <tbody id="margins-report-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ USERS ══ -->
+      <section id="page-users" class="page hidden">
+        <div class="page-toolbar">
+          <div></div>
+          <button class="btn btn-primary" onclick="openRegisterModal()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvel utilisateur
+          </button>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Rôle</th><th>Inscription</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ SETTINGS ══ -->
+      <section id="page-settings" class="page hidden">
+        <div class="settings-grid">
+          <!-- Company Identity -->
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Identité de l'entreprise</h3></div>
+            <div class="card-body">
+              <div class="logo-upload-area" id="logo-upload-area">
+                <div class="logo-preview" id="logo-preview">
+                  <div class="logo-preview-placeholder">
+                    <svg viewBox="0 0 24 24" style="width:40px;height:40px;color:var(--gray-400)"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <p>Logo actuel</p>
+                  </div>
+                </div>
+                <div class="logo-upload-actions">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Télécharger un logo
+                    <input type="file" id="logo-file-input" accept="image/*" style="display:none" onchange="uploadLogo(this)" />
+                  </label>
+                  <p class="text-muted text-small">PNG, JPG, SVG · Max 5 Mo</p>
+                </div>
+              </div>
+
+              <div class="settings-form" id="company-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Nom de l'entreprise</label>
+                    <input type="text" id="set-company-name" class="form-input" placeholder="SoCake" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Couleur principale</label>
+                    <div class="color-picker-wrap">
+                      <input type="color" id="set-primary-color" class="color-picker-input" value="#E8748E" oninput="previewColor(this.value)" />
+                      <input type="text" id="set-primary-color-text" class="form-input" placeholder="#E8748E" oninput="syncColorPicker(this.value)" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Slogan</label>
+                  <input type="text" id="set-slogan" class="form-input" placeholder="Cake & Dessert · Gestion de commandes" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Activités</label>
+                  <textarea id="set-activities" class="form-textarea" placeholder="Pâtisserie artisanale, Gâteaux sur commande..."></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Adresse</label>
+                    <input type="text" id="set-address" class="form-input" placeholder="12 rue de la Paix" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Ville</label>
+                    <input type="text" id="set-city" class="form-input" placeholder="Paris" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Téléphone</label>
+                    <input type="tel" id="set-phone" class="form-input" placeholder="01 23 45 67 89" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Site web</label>
+                    <input type="url" id="set-website" class="form-input" placeholder="https://votresite.com" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Devise (code ISO)</label>
+                    <input type="text" id="set-currency" class="form-input" placeholder="EUR" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Symbole monétaire</label>
+                    <input type="text" id="set-currency-symbol" class="form-input" placeholder="€" />
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                  <span style="font-size:.8rem;color:var(--gray-500);align-self:center">Préréglages :</span>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="setCurrencyPreset('EUR','€')">🇪🇺 Euro (€)</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="setCurrencyPreset('XOF','FCFA')">🇸🇳 Franc CFA (FCFA)</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="setCurrencyPreset('USD','$')">🇺🇸 Dollar ($)</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="setCurrencyPreset('GBP','£')">🇬🇧 Livre (£)</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="setCurrencyPreset('MAD','DH')">🇲🇦 Dirham (DH)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Notifications email</h3></div>
+            <div class="card-body settings-form">
+              <div class="settings-toggle-group">
+                <div class="settings-toggle">
+                  <div>
+                    <p class="settings-toggle-label">Activer les notifications</p>
+                    <p class="settings-toggle-desc text-muted text-small">Envoyer des emails aux clients</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="set-email-notifications" onchange="toggleEmailSettings(this.checked)" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div id="email-settings-fields" class="hidden">
+                <div class="form-group">
+                  <label class="form-label">Email expéditeur</label>
+                  <input type="email" id="set-email-from" class="form-input" placeholder="noreply@votreentreprise.com" />
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Serveur SMTP</label>
+                    <input type="text" id="set-smtp-host" class="form-input" placeholder="smtp.gmail.com" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Port SMTP</label>
+                    <input type="number" id="set-smtp-port" class="form-input" placeholder="587" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Utilisateur SMTP</label>
+                    <input type="text" id="set-smtp-user" class="form-input" placeholder="utilisateur@gmail.com" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Mot de passe SMTP</label>
+                    <input type="password" id="set-smtp-pass" class="form-input" placeholder="••••••••" />
+                  </div>
+                </div>
+                <p class="text-small text-muted" style="margin-top:-8px">Laisser vide pour conserver le mot de passe actuel</p>
+
+                <div class="settings-toggle-group" style="margin-top:var(--space-4)">
+                  <p class="form-label" style="margin-bottom:var(--space-3)">Notifier le client quand :</p>
+                  <label class="checkbox-label"><input type="checkbox" id="set-notify-confirm" /> Commande confirmée</label>
+                  <label class="checkbox-label"><input type="checkbox" id="set-notify-ready" /> Commande prête</label>
+                  <label class="checkbox-label"><input type="checkbox" id="set-notify-shipped" /> Commande livrée</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-actions">
+          <div id="settings-feedback" class="hidden"></div>
+          <button class="btn btn-primary" onclick="saveSettings()">
+            <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13"/><polyline points="7 3 7 8 15 8"/></svg>
+            Enregistrer les paramètres
+          </button>
+        </div>
+      </section>
+
+      <!-- ══ PROFILE ══ -->
+      <section id="page-profile" class="page hidden">
+        <div class="profile-container">
+          <div class="card profile-card">
+            <div class="profile-avatar-big" id="profile-avatar-big">A</div>
+            <h2 class="profile-name" id="profile-name">Utilisateur</h2>
+            <span class="badge" id="profile-role-badge">Employé</span>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Modifier le profil</h3></div>
+            <form id="profile-form" class="profile-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nom complet</label>
+                  <input type="text" id="profile-name-input" class="form-input" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input type="email" id="profile-email-input" class="form-input" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Téléphone</label>
+                <input type="tel" id="profile-phone-input" class="form-input" placeholder="06 12 34 56 78" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Mot de passe actuel</label>
+                  <input type="password" id="profile-current-pass" class="form-input" placeholder="Laisser vide pour ne pas changer" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nouveau mot de passe</label>
+                  <input type="password" id="profile-new-pass" class="form-input" placeholder="Nouveau mot de passe" />
+                </div>
+              </div>
+              <div id="profile-error" class="form-error hidden"></div>
+              <div id="profile-success" class="form-success hidden"></div>
+              <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /page-content -->
+  </main>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-overlay hidden" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-container">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-title">Modal</h3>
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<!-- ══ TOASTS ══ -->
+<div id="toast-container" class="toast-container"></div>
+
+<!-- Scripts -->
+<script src="/js/api.js?v=4"></script>
+<script src="/js/utils.js?v=4"></script>
+<script src="/js/auth.js?v=4"></script>
+<script src="/js/dashboard.js?v=4"></script>
+<script src="/js/events.js?v=4"></script>
+<script src="/js/orders.js?v=4"></script>
+<script src="/js/stock.js?v=4"></script>
+<script src="/js/products.js?v=4"></script>
+<script src="/js/users.js?v=4"></script>
+<script src="/js/customers.js?v=4"></script>
+<script src="/js/deliveries.js?v=4"></script>
+<script src="/js/reports.js?v=4"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
