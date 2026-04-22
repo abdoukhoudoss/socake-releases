@@ -1,6 +1,6 @@
 {
   "name": "socake-app",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "SoCake - Gestion de commandes pour patisserie",
   "main": "main.js",
   "scripts": {
@@ -85,7 +85,7 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "cisse-abdoukhoudoss",
+      "owner": "abdoukhoudoss",
       "repo": "socake-releases",
       "releaseType": "release"
     }
